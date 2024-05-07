@@ -4,7 +4,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped using [`create-nex
 
 ## How to use
 
-Download the example [or clone the repo](https://github.com/mui/material-ui):
+Download the example [or clone the repo](https://github.com/UWT-SET-TCSS460-LECTURE-MATERIALS/material-ui-nextjs-ts-template.git):
 
 Install it and run:
 

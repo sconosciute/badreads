@@ -6,6 +6,7 @@ import Link from "@mui/material/Link";
 import NextLink from "next/link";
 import ProTip from "@/components/ProTips";
 import Informational from "@/components/Informational";
+import BookPreview from "@/components/BookPreview";
 
 export default function Home() {
   return (
@@ -30,6 +31,8 @@ export default function Home() {
         </Link>
         <ProTip />
         <Informational />
+
+          <BookPreview></BookPreview>
       </Box>
     </Container>
   );

@@ -78,6 +78,13 @@ const lightTheme = createTheme({
         }),
       },
     },
+    MuiAppBar: {
+      styleOverrides: {
+        colorPrimary: {
+          backgroundColor: "#cbac8f" // Tan
+        }
+      }
+    },
   },
 });
 

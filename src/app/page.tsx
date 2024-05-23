@@ -6,6 +6,8 @@ import Link from "@mui/material/Link";
 import NextLink from "next/link";
 import ProTip from "@/components/ProTips";
 import Informational from "@/components/Informational";
+import BookCard from "@/components/BookItem";
+import {testBook} from "@/Common";
 
 export default function Home() {
   return (
@@ -31,6 +33,7 @@ export default function Home() {
         <ProTip />
         <Informational />
       </Box>
+        <BookCard book={testBook} />
     </Container>
   );
 }

@@ -4,7 +4,7 @@ import * as React from "react";
 import {useMediaQuery, useTheme} from "@mui/system";
 import {Card, CardContent, CardMedia, Rating} from "@mui/material";
 import Box from "@mui/material/Box";
-import {IBook, IRatings} from "@/Common";
+import {IBook} from "@/Common";
 import Typography from "@mui/material/Typography";
 
 

@@ -30,16 +30,16 @@ export const testBook :IBook = {
     original_title: "An old book",
     title: "A new book",
     ratings: {
-        average: 5,
+        average: 4.5,
         count: 5,
         rating_1: 0,
         rating_2: 0,
         rating_3: 0,
-        rating_4: 0,
-        rating_5: 5,
+        rating_4: 1,
+        rating_5: 4,
     },
     icons: {
-        large: "https://http.cat/200",
-        small: "https://http.cat/200"
+        large: "https://images.gr-assets.com/books/1447303603m/2767052.jpg",
+        small: "https://images.gr-assets.com/books/1447303603s/2767052.jpg"
     }
 }

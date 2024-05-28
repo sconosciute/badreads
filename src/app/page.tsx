@@ -6,34 +6,17 @@ import Link from "@mui/material/Link";
 import NextLink from "next/link";
 import ProTip from "@/components/ProTips";
 import Informational from "@/components/Informational";
-import BookPreview from "@/components/BookPreview";
+import BookCard from "@/components/BookCard";
+import {testBook} from "@/Common";
+import * as test from "node:test";
+import SearchResults from "@/components/SearchResults";
+
+const books = [testBook, testBook, testBook, testBook, testBook, testBook, testBook, testBook];
 
 export default function Home() {
   return (
-    <Container maxWidth="lg">
-      <Box
-        sx={{
-          my: 4,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Typography variant="h3" component="h1" sx={{ mb: 2 }}>
-          Material UI - Next.js App Router example in TypeScript
-        </Typography>
-        <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
-          Template for TCSS 460 SP24
-        </Typography>
-        <Link href="/about" color="secondary" component={NextLink}>
-          Go to the about page
-        </Link>
-        <ProTip />
-        <Informational />
-
-          <BookPreview></BookPreview>
-      </Box>
+    <Container maxWidth="lg" sx={{alignItems: "center"}}>
+        <SearchResults books={books} />
     </Container>
   );
 }

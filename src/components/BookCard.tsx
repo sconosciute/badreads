@@ -18,13 +18,13 @@ export default function BookCard({book}: {book: IBook}) {
             <CardMedia sx={{ maxWidth: "33%", maxHeight: "auto", objectFit: "contain"}} component="img" image={book.icons.large} alt={imgAlt}/>
             <Box sx={{display: 'flex', flexDirection: 'column'}}>
                 <CardContent sx={{flex: '1 0 auto'}}>
-                    <Typography component="div" variant={"h5"}>
+                    <Typography key={"title: " + book.title} component="div" variant={"h5"}>
                         {book.title}
                     </Typography>
-                    <Typography component="div" variant="subtitle1">
+                    <Typography key={"author: " + book.authors} component="div" variant="subtitle1">
                         {book.authors}
                     </Typography>
-                    <Rating name="Average Rating" value={book.ratings.average} precision={0.5} readOnly />
+                    <Rating key={"Ratings for " + book.title} name="Average Rating" value={book.ratings.average} precision={0.5} readOnly />
                 </CardContent>
 
             </Box>

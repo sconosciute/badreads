@@ -14,15 +14,13 @@ async function getAllBooks(page: number = 1, pageSize: number = 10) {
 
 export default async function SearchResults({query}: { query: string }) {
 
-    console.log("grabbing books");
     const books = await getAllBooks();
-    console.dir(books);
 
     return (
         <Box sx={{padding: "1vw", flexWrap: 'wrap'}} display="flex" alignItems="center">
             <Grid container spacing={2} columns={3}>
                 {books.map((book: IBook) => (
-                    <Grid item xs={3} md={1}>
+                    <Grid key={book.isbn13} item xs={3} md={1}>
                         <BookCard book={book}/>
                     </Grid>
                 ))}

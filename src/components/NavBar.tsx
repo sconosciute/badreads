@@ -8,8 +8,11 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
-import Select from "../components/NavSelect";
-import Dialog from "../components/AddBookDialog";
+import NavSelect from "../components/NavSelect";
+import AddBookDialog from "../components/AddBookDialog";
+import {useState} from "react";
+import NavSearchField from "@/components/NavSearchField";
+
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -45,19 +48,20 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
     [theme.breakpoints.up("sm")]: {
-      width: "40ch",
+      width: "30vw",
       "&:focus": {
-        width: "50ch",
+        width: "35vw",
       },
     },
   },
 }));
 
 export default function SearchAppBar() {
+  const [searchMode, setSearchMode] = useState("title");
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Toolbar sx={{ justifyContent: "space-between" }}>
+        <Toolbar sx={{ justifyContent: "space-between", display: "flex", alignItems: "center", flexWrap: "wrap" }}>
           <Box>
             <Typography
               variant="h6"
@@ -70,21 +74,13 @@ export default function SearchAppBar() {
           </Box>
           <Box display="flex" flexDirection="row" alignItems="center">
             {/*A NavSelect component*/}
-            <Select></Select>
+            <NavSelect {...{searchMode, setSearchMode}}></NavSelect>
 
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="Search…"
-                inputProps={{ "aria-label": "search" }}
-              />
-            </Search>
+            <NavSearchField searchMode={searchMode} setSearchMode={setSearchMode}/>
           </Box>
           <Box>
             {/* Closed dialog with "Add Book" button to open it */}
-            <Dialog></Dialog>
+            <AddBookDialog></AddBookDialog>
           </Box>
         </Toolbar>
       </AppBar>

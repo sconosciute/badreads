@@ -23,7 +23,13 @@ export interface IBook {
     icons: IUrlIcon;
 }
 
-export const testBook :IBook = {
+export interface IBookResponse extends Response{
+    entries: IBook[],
+    currentPage: number,
+    pageSize: number
+}
+
+export const testBook: IBook = {
     isbn13: 0,
     authors: "An Author",
     publication: 2024,
@@ -43,3 +49,5 @@ export const testBook :IBook = {
         small: "https://images.gr-assets.com/books/1447303603s/2767052.jpg"
     }
 }
+
+export const baseUrl = "http://localhost:4000"

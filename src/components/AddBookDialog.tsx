@@ -54,7 +54,7 @@ const getSecondary = (text: string) => {
   );
 };
 
-export default function FullScreenDialog() {
+export default function AddBookDialog() {
   {
     /* Functons for setting input values */
   }

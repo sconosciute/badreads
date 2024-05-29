@@ -14,7 +14,7 @@ export default function BookCard({book}: {book: IBook}) {
     const media = useMediaQuery(theme.breakpoints.down("sm"));
 
     return (
-        <Card sx={{display: "flex", height: "100%", maxWidth: "600px", margin: "1vw"}}>
+        <Card sx={{display: "flex", height: "100%", maxWidth: "600px", margin: "0"}}>
             <CardMedia sx={{ maxWidth: "33%", maxHeight: "auto", objectFit: "contain"}} component="img" image={book.icons.large} alt={imgAlt}/>
             <Box sx={{display: 'flex', flexDirection: 'column'}}>
                 <CardContent sx={{flex: '1 0 auto'}}>

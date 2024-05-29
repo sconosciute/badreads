@@ -12,7 +12,7 @@ const books = [testBook, testBook, testBook, testBook, testBook, testBook, testB
 
 export default function Home() {
   return (
-    <Container maxWidth="lg" sx={{alignItems: "center"}}>
+    <Container maxWidth="xl" sx={{alignItems: "center"}}>
         <Suspense fallback={<CircularProgress />}>
             <SearchResults  query={"nah"}/>
         </Suspense>

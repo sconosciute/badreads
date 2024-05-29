@@ -18,9 +18,9 @@ export default async function SearchResults({query}: { query: string }) {
 
     return (
         <Box sx={{padding: "1vw", flexWrap: 'wrap'}} display="flex" alignItems="center">
-            <Grid container spacing={2} columns={3}>
+            <Grid sx={{justifyItems: "center"}} container spacing={2} columns={9}>
                 {books.map((book: IBook) => (
-                    <Grid key={book.isbn13} item xs={3} md={1}>
+                    <Grid key={book.isbn13} item xs={9} md={4.5} lg={3}>
                         <BookCard book={book}/>
                     </Grid>
                 ))}

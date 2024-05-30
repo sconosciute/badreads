@@ -1,26 +1,30 @@
-"use client"
-
 import * as React from "react";
-import {padding, useTheme} from "@mui/system";
-import {useState} from "react";
-import {IBook} from "@/Common";
-import {useSearchParams} from "next/navigation";
+import {useTheme} from "@mui/system";
+import {baseUrl, IBook, IBookResponse} from "@/Common";
 import Box from "@mui/material/Box";
 import BookCard from "@/components/BookCard";
+import Grid from "@mui/material/Grid";
 
-// const params = useSearchParams();
-// const [page, setPage] = useState(params.get("page") || 1)
-// const [pageSize, setPageSize] = useState(params.get("pageSize") || 10)
-//
-// const baseRoute = "http://localhost:4000"
-// const allQuery = fetch(`${baseRoute}/book?page=${page}&pageSize=${pageSize}`)
+async function getAllBooks(page: number = 1, pageSize: number = 10) {
+    const res = await fetch(`${baseUrl}/books/all?page=${page}&pageSize=${pageSize}`);
+    const resJ = await res.json();
+    console.dir(resJ);
+    return resJ.entries;
+}
 
-export default function SearchResults({books}: {books: IBook[]}) {
+export default async function SearchResults({query}: { query: string }) {
+
+    const books = await getAllBooks();
+
     return (
         <Box sx={{padding: "1vw", flexWrap: 'wrap'}} display="flex" alignItems="center">
-            {books.map((book) => (
-                <BookCard book={book} />
-            ))}
+            <Grid sx={{justifyItems: "center"}} container spacing={2} columns={9}>
+                {books.map((book: IBook) => (
+                    <Grid key={book.isbn13} item xs={9} md={4.5} lg={3}>
+                        <BookCard book={book}/>
+                    </Grid>
+                ))}
+            </Grid>
         </Box>
     )
 }

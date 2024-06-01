@@ -7,16 +7,22 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Rating from "@mui/material/Rating";
 import { useState } from "react";
-import {baseUrl} from "@/Common";
+import { baseUrl } from "@/Common";
+import Modal from "@mui/material/Modal";
+import TextField from "@mui/material/TextField";
 
 export default function BookDetails() {
 
-    const [title, setTitle] = useState("Twilight (Twilight, #1)");
+    const [title, setTitle] = useState("");
+    const [open, setOpen] = useState(false);
 
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     const handleDelete = async () => {
+
         try {
-            const response = await fetch(`${baseUrl}/book/title/${title}`, {
+            const response = await fetch(`http://localhost:4000/books/title/${title}`, {
                 method: 'DELETE',
             });
 
@@ -32,6 +38,8 @@ export default function BookDetails() {
             console.error("Error:", error);
             alert("Server error - contact support.");
         }
+
+        handleClose();
     };
 
     return (
@@ -82,7 +90,7 @@ export default function BookDetails() {
 
                     <Box sx={{ justifyContent: 'space-around' }}>
                         <Button variant="contained" sx={{ margin: 2 }}>Update</Button>
-                        <Button variant="contained" sx={{ margin: 2 }} onClick={handleDelete}>Delete</Button>
+                        <Button variant="contained" sx={{ margin: 2 }} onClick={handleOpen}>Delete</Button>
                     </Box>
                 </Box>
             </Box>
@@ -91,6 +99,35 @@ export default function BookDetails() {
             <Box sx={{ width: 50, display: "flex", flexDirection: "column", flex: '0 0 30%' }}>
                 (Other books would go here)
             </Box>
+
+            {/* Confirmation Modal */}
+            <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-title"
+                aria-describedby="modal-description"
+            >
+                <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <Typography id="modal-title" variant="h6" component="h2">
+                        Confirm Delete
+                    </Typography>
+                    <Typography id="modal-description" sx={{ mt: 2 }}>
+                        Please type the title of the book to confirm deletion:
+                    </Typography>
+                    <TextField
+                        fullWidth
+                        variant="outlined"
+                        label="Book Title"
+                        onChange={(e) => setTitle(e.target.value)}
+                    />
+                    <Button variant="contained" color="error" onClick={handleDelete}>
+                        Delete
+                    </Button>
+                    <Button variant="outlined" onClick={handleClose}>
+                        Cancel
+                    </Button>
+                </Box>
+            </Modal>
         </Container>
     );
 }

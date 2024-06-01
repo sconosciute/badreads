@@ -23,10 +23,12 @@ export interface IBook {
     icons: IUrlIcon;
 }
 
-export interface IBookResponse extends Response{
+export interface IBookResponse extends Response {
     entries: IBook[],
     currentPage: number,
-    pageSize: number
+    pageSize: number,
+    totalPages: number,
+    totalBooks: number
 }
 
 export const testBook: IBook = {

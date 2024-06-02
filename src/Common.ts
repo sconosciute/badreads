@@ -23,10 +23,12 @@ export interface IBook {
     icons: IUrlIcon;
 }
 
-export interface IBookResponse extends Response{
+export interface IBookResponse extends Response {
     entries: IBook[],
     currentPage: number,
-    pageSize: number
+    pageSize: number,
+    totalPages: number,
+    totalBooks: number
 }
 
 export const testBook: IBook = {
@@ -48,6 +50,11 @@ export const testBook: IBook = {
         large: "https://images.gr-assets.com/books/1447303603m/2767052.jpg",
         small: "https://images.gr-assets.com/books/1447303603s/2767052.jpg"
     }
+}
+
+export enum searchTypes {
+    author = "author",
+    isbn = "isbn"
 }
 
 export const baseUrl = "http://localhost:4000"

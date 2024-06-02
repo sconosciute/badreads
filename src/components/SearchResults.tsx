@@ -58,20 +58,22 @@ export default function SearchResults({query, searchFunc}: {
                 ))}
                 {!books.entries && <CircularProgress/>}
             </Grid>
-            <Box sx={{marginTop: "2vh"}} display={"flex"} alignItems={"center"}>
-                <FormControl variant="standard" size="small">
-                    <InputLabel id="page-size-label">Books per page</InputLabel>
-                    <Select sx={{minWidth: "7em"}} labelId="page-size-label" id="page-size" value={pageSize}
-                            onChange={(e) => pushPageParams(page, e.target.value.toString())}>
-                        <MenuItem value={12}>12</MenuItem>
-                        <MenuItem value={24}>24</MenuItem>
-                        <MenuItem value={36}>36</MenuItem>
-                    </Select>
-                </FormControl>
-                <Pagination count={books.totalPages} page={Number(page)} siblingCount={2} boundaryCount={1} onChange={(e, v) => {
-                    pushPageParams(v.toString(), pageSize); //This has to be wrapped in curlybois or it doesn't work?????
-                }}/>
-            </Box>
+            {
+                books.currentPage && <Box sx={{marginTop: "2vh"}} display={"flex"} alignItems={"center"}>
+                    <FormControl variant="standard" size="small">
+                        <InputLabel id="page-size-label">Books per page</InputLabel>
+                        <Select sx={{minWidth: "7em"}} labelId="page-size-label" id="page-size" value={pageSize}
+                                onChange={(e) => pushPageParams(page, e.target.value.toString())}>
+                            <MenuItem value={12}>12</MenuItem>
+                            <MenuItem value={24}>24</MenuItem>
+                            <MenuItem value={36}>36</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <Pagination count={books.totalPages} page={Number(page)} siblingCount={2} boundaryCount={1} onChange={(e, v) => {
+                        pushPageParams(v.toString(), pageSize); //This has to be wrapped in curlybois or it doesn't work?????
+                    }}/>
+                </Box>
+            }
         </Box>
     )
 

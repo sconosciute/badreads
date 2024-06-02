@@ -60,10 +60,12 @@ export default function SearchResults({query, searchFunc}: {
                     setBooks(res.body);
                     setCompState(compStates.ready);
                 } else {
+                    //@ts-ignore I am aware it's not assignable, that's why we check later!!!!
+                    setBooks({});
                     setCompState(compStates.noData);
                 }
             })
-    }, [setBooks, params, setCompState])
+    }, [setBooks, params, setCompState, path])
 
     //TODO: page size dialogue isn't closing!
     return (

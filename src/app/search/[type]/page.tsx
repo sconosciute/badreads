@@ -1,3 +1,3 @@
-export default function Search({params} : {params: {type: string}}) {
+export default function Search({params, searchParams} : {params: {type: string}, searchParams: { [key: string]: string | string[] | undefined}}) {
 
 }

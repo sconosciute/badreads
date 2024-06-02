@@ -1,3 +1,5 @@
+"use client"
+
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CloseIcon from "@mui/icons-material/Close";
 import PublishIcon from '@mui/icons-material/Publish';

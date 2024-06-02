@@ -1,31 +1,38 @@
 "use client"
 
 import * as React from 'react';
-import {Box, TextField, Transitions} from "@mui/material";
-import {Dispatch, SetStateAction, useState} from "react";
+import {useState} from 'react';
+import {Box, TextField} from "@mui/material";
 import {alpha} from "@mui/material/styles";
 import {useTheme} from "@mui/system";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select, {SelectChangeEvent} from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import {searchTypes} from "@/Common";
+import {useRouter} from "next/navigation";
+import SendIcon from '@mui/icons-material/Send';
+import IconButton from "@mui/material/IconButton";
 
 
 export default function NavSearchField() {
     const theme = useTheme();
+    const router = useRouter();
 
     const [searchMode, setSearchMode] = useState("title");
+    const [query, setQuery] = useState("");
+
     const searchModes = [
         {
-            value: "title",
+            value: searchTypes.title,
             label: "Title"
         },
         {
-            value: "author",
+            value: searchTypes.author,
             label: "Author"
         },
         {
-            value: "isbn-13",
+            value: searchTypes.isbn,
             label: "ISBN-13"
         }
     ]
@@ -33,6 +40,16 @@ export default function NavSearchField() {
     const handleChange = (event: SelectChangeEvent) => {
         setSearchMode(event.target.value as string);
     };
+
+    const handleSearch = (event: React.KeyboardEvent<HTMLDivElement>) => {
+        if (event.key !== 'Enter') return;
+        runSearch();
+    }
+
+    const runSearch = () => {
+        const route = `/search/${searchMode}/?q=${query}`;
+        router.push(route);
+    }
 
     return (
         <Box display="flex" flexDirection="row" alignItems="center">
@@ -83,9 +100,13 @@ export default function NavSearchField() {
 
             }}>
                 <TextField sx={{ml: "1vw"}} id="nav-core-search" placeholder="Search" variant="standard"
-                           InputProps={{disableUnderline: true}}>
+                           InputProps={{disableUnderline: true}} onKeyDown={handleSearch}
+                           onChange={(e) => setQuery(e.target.value)}>
 
                 </TextField>
+                <IconButton aria-label="search" sx={{ ml: "1vw" }} onClick={runSearch}>
+                    <SendIcon />
+                </IconButton>
             </Box>
         </Box>
     )

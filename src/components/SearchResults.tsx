@@ -27,6 +27,10 @@ export async function getBookIsbn(isbn: string, page: string, pageSize: string):
     return await fetch(`${baseUrl}/books/isbn/?id=${isbn}`).then((res) => res.json()) as IBookResponse;
 }
 
+export async function getBookTitle(title: string, page: string, pageSize: string): Promise<IBookResponse> {
+    return await fetch(`${baseUrl}/books/title/?titleName=${title}`).then((res) => res.json()) as IBookResponse;
+}
+
 
 export default function SearchResults({query, searchFunc}: {
     query: string,
@@ -45,7 +49,6 @@ export default function SearchResults({query, searchFunc}: {
         searchFunc(query, page, pageSize)
             .then((res) => setBooks(res))
     }, [setBooks, params])
-    // const books: IBookResponse = await searchFunc(query, page, pageSize);
 
     //TODO: page size dialogue isn't closing!
     return (

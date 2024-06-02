@@ -54,7 +54,8 @@ export const testBook: IBook = {
 
 export enum searchTypes {
     author = "author",
-    isbn = "isbn"
+    isbn = "isbn",
+    title = "title"
 }
 
 export const baseUrl = "http://localhost:4000"

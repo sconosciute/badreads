@@ -9,31 +9,61 @@ import Rating from "@mui/material/Rating";
 import { useState } from "react";
 import Modal from "@mui/material/Modal";
 import TextField from "@mui/material/TextField";
+import {baseUrl, IBook} from "@/Common";
 
-export default function BookDetails() {
-    const [title, setTitle] = useState("");
+export default function BookInfo() {
     const [open, setOpen] = useState(false);
+    const [isbn, setIsbn] = useState("");
+    const [book, setBook] = useState<IBook | null>(null);
     const [updateData, setUpdateData] = useState({
         isbn13: "",
         rating_1_star: 0,
         rating_2_star: 0,
         rating_3_star: 0,
         rating_4_star: 0,
-        rating_5_star: 0
+        rating_5_star: 0,
     });
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    const handleDelete = async () => {
+    const handleFetchBook = async () => {
         try {
-            const response = await fetch(`http://localhost:4000/books/title/${title}`, {
+            const response = await fetch(`http://localhost:4000/books/isbn?id=${isbn}`);
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.entries && data.entries.length > 0) {
+                    setBook(data.entries[0]);
+                } else {
+                    alert("No book data found.");
+                }
+            } else if (response.status === 404) {
+                alert("Book not found.");
+            } else {
+                alert("Server error - contact support.");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Server error - contact support.");
+        }
+    };
+
+
+
+
+
+    const handleDelete = async () => {
+        if (!book) return;
+        try {
+            const response = await fetch(`http://localhost:4000/books/title/${book.title}`, {
                 method: 'DELETE',
             });
 
             if (response.ok) {
                 const data = await response.json();
                 alert(data.message);
+                setBook(null);
             } else if (response.status === 404) {
                 alert("Book not found.");
             } else {
@@ -58,6 +88,7 @@ export default function BookDetails() {
             if (response.ok) {
                 const data = await response.json();
                 alert("Book updated successfully");
+                setBook(data); // Optionally, update the book details display with the new data
             } else {
                 alert("Server error - contact support.");
             }
@@ -71,56 +102,76 @@ export default function BookDetails() {
 
     return (
         <Container maxWidth="lg" sx={{ display: 'flex', flexFlow: "row", marginTop: "1em", gap: "2em" }}>
-            <Box sx={{ minWidth: 600, borderRadius: "5px", display: "flex", backgroundColor: '#E0DFD5', flex: '0 0 70%' }}>
-                {/* Book image */}
-                <Box
-                    component="img"
-                    margin={"1em"}
-                    sx={{
-                        height: 400,
-                        width: 270,
-                        maxHeight: { xs: 800, md: 1000 },
-                        maxWidth: { xs: 540, md: 675 },
-                    }}
-                    alt="Hunger Games 1 cover"
-                    src="https://images.gr-assets.com/books/1447303603s/2767052.jpg"
-                />
+            <Box sx={{ width: 50, height: 100, borderRadius: "5px", display: "flex", backgroundColor: '#E0DFD5', flex: '0 0 35%', overflow: 'hidden' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', color: '#313638', padding: '1em' }}>
+                    <TextField
+                        fullWidth
+                        size="small"
+                        variant="outlined"
+                        label="ISBN"
+                        value={isbn}
+                        onChange={(e) => setIsbn(e.target.value)}
+                        sx={{ marginBottom: '1em' }}
+                    />
+                    <Button variant="contained" size="small" onClick={handleFetchBook}>Fetch Book</Button>
+                </Box>
+            </Box>
 
-                {/* Main information */}
-                <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', color: '#313638' }}>
-                    <Typography variant="h3">
-                        {title}
-                    </Typography>
-                    <Typography sx={{ fontSize: "1.8em" }}>
-                        Author
-                    </Typography>
-                    <Typography>
-                        ISBN-13: [isbn]
-                    </Typography>
 
-                    <Box>
+            {book && (
+                <Box sx={{ minWidth: 300, borderRadius: "5px", display: "flex", backgroundColor: '#E0DFD5', flex: '0 0 70%' }}>
+                    <Box
+                        component="img"
+                        margin={"1em"}
+                        sx={{
+                            height: 400,
+                            width: 270,
+                            maxHeight: { xs: 800, md: 1000 },
+                            maxWidth: { xs: 540, md: 675 },
+                        }}
+                        alt={book.title}
+                        src={book.icons.large}
+                    />
+
+                    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', color: '#313638' }}>
+                        <Typography component="div" variant={"h5"}>
+                            {book.title}
+                        </Typography>
+                        <Typography component="div" variant={"h6"}>
+                            {book.authors}
+                        </Typography>
+                        <Typography component="div" variant={"h6"}>
+                            {book.isbn13}
+                        </Typography>
+                        <Typography component="div" variant={"h6"}>
+                            {book.original_title}
+                        </Typography>
+                        <Typography component="div" variant={"h6"}>
+                            {book.publication}
+                        </Typography>
+
                         <Box>
-                            <Rating precision={0.1} size={"large"} value={4.5} readOnly sx={{ marginTop: "1em" }} />
-                            <Typography>
-                                Average rating: [4.5] stars
-                            </Typography>
+                            {/*<Rating precision={0.1} size={"large"} value={4.5} readOnly sx={{ marginTop: "1em" }} />*/}
+                            {/*<Typography>*/}
+                            {/*    Average rating: [4.5] stars*/}
+                            {/*</Typography>*/}
                         </Box>
 
                         <Typography sx={{ marginTop: "1em" }}>
-                            One star ratings: [number] <br />
-                            Two star ratings: [number] <br />
-                            Three star ratings: [number] <br />
-                            Four star ratings: [number] <br />
-                            Five star ratings: [number] <br />
+                            One star ratings: {book.ratings.rating_1} <br />
+                            Two star ratings: {book.ratings.rating_2} <br />
+                            Three star ratings: {book.ratings.rating_3} <br />
+                            Four star ratings: {book.ratings.rating_4} <br />
+                            Five star ratings: {book.ratings.rating_5} <br />
                         </Typography>
-                    </Box>
 
-                    <Box sx={{ justifyContent: 'space-around' }}>
-                        <Button variant="contained" sx={{ margin: 2 }} onClick={handleOpen}>Update</Button>
-                        <Button variant="contained" sx={{ margin: 2 }}>Delete</Button>
+                        <Box sx={{ justifyContent: 'space-around' }}>
+                            <Button variant="contained" sx={{ margin: 2 }} onClick={handleOpen}>Update</Button>
+                            <Button variant="contained" sx={{ margin: 2 }} onClick={handleDelete}>Delete</Button>
+                        </Box>
                     </Box>
                 </Box>
-            </Box>
+            )}
 
             {/* Recommendation sidebar */}
             <Box sx={{ width: 50, display: "flex", flexDirection: "column", flex: '0 0 30%' }}>
@@ -181,7 +232,7 @@ export default function BookDetails() {
                         type="number"
                         value={updateData.rating_5_star}
                         onChange={(e) => setUpdateData({ ...updateData, rating_5_star: parseInt(e.target.value)})}
-                        />
+                    />
                     <Button variant="contained" color="error" onClick={handleUpdate}>
                         Update
                     </Button>

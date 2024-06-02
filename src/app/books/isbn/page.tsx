@@ -21,7 +21,6 @@ interface Book {
     rating_3_star: number;
     rating_4_star: number;
     rating_5_star: number;
-    avg_rating: number;
     image_url: string;
     image_small_url: string;
 }
@@ -68,16 +67,18 @@ export default function BookDetails() {
             rating_3_star: null,
             rating_4_star: null,
             rating_5_star: null,
-            avg_rating: null,
             image_url: "",
             image_small_url: ""
         }
     );
 
     useEffect(() => {
+        // Getting the ISBN from URL
+        const params = new URLSearchParams(window.location.search);
+        const bookID = params.get('id');
+
         const fetchBook = async () => {
-            // Must change id to a dependency later
-            const response = await fetch(`http://localhost:4000/books/isbn?id=9780345503820`);
+            const response = await fetch(`http://localhost:4000/books/isbn?id=${bookID}`);
             const book = await response.json();setBook(book.entries);
             console.dir(book);
         };
@@ -85,9 +86,11 @@ export default function BookDetails() {
         fetchBook();
     }, []);
 
+
+
     return (
-        <Container maxWidth="lg" sx={{ display: 'flex', flexFlow: "row", marginTop: "1em", gap: "2em" }}>
-            <Box sx={{ minWidth: 600, borderRadius: "5px", display: "flex", backgroundColor: '#E0DFD5', flex: '0 0 70%' }}>
+        <Container maxWidth="lg" sx={{ display: 'flex', flexFlow: "row", marginTop: "1em", gap: "2em", justifyContent:"center" }}>
+            <Box sx={{ padding: "0.5em", minWidth: 600, borderRadius: "5px", display: "flex", backgroundColor: '#E0DFD5',  flex: '0 0 70%'}}>
                 {/* Book image */}
                 <Box
                     component="img"
@@ -104,10 +107,10 @@ export default function BookDetails() {
 
                 {/* Main information */}
                 <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', color: '#313638' }}>
-                    <Typography variant="h3">
+                    <Typography variant="h4">
                         {book.title}
                     </Typography>
-                    <Typography sx={{ fontSize: "1.8em" }}>
+                    <Typography sx={{ fontSize: "1.6em" }}>
                         {book.authors}
                     </Typography>
                     <Typography>
@@ -143,11 +146,6 @@ export default function BookDetails() {
                 </Box>
             </Box>
 
-            {/* Recommendation sidebar */}
-            <Box sx={{ width: 50, display: "flex", flexDirection: "column", flex: '0 0 30%' }}>
-                (Other books would go here)
-            </Box>
-
             {/* Confirmation Modal */}
             <Modal
                 open={open}
@@ -179,4 +177,3 @@ export default function BookDetails() {
         </Container>
     );
 }
-

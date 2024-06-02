@@ -55,7 +55,6 @@ export default function SearchResults({query, searchFunc}: {
     useEffect(() => {
         searchFunc(query, page, pageSize)
             .then((res) => {
-                console.dir(res);
                 if (res.status == 200) {
                     setBooks(res.body);
                     setCompState(compStates.ready);

@@ -44,7 +44,7 @@ export default function SearchResults({query, searchFunc}: {
     useEffect(() => {
         searchFunc(query, page, pageSize)
             .then((res) => setBooks(res))
-    }, [setBooks])
+    }, [setBooks, params])
     // const books: IBookResponse = await searchFunc(query, page, pageSize);
 
     //TODO: page size dialogue isn't closing!

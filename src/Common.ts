@@ -23,12 +23,18 @@ export interface IBook {
     icons: IUrlIcon;
 }
 
-export interface IBookResponse extends Response {
+export interface IBookResponse {
     entries: IBook[],
+    message: string,
     currentPage: number,
     pageSize: number,
     totalPages: number,
     totalBooks: number
+}
+
+export interface IResponseWrapper {
+    body: IBookResponse,
+    status: number
 }
 
 export const testBook: IBook = {
@@ -56,6 +62,12 @@ export enum searchTypes {
     author = "author",
     isbn = "isbn",
     title = "title"
+}
+
+export enum compStates {
+    loading,
+    ready,
+    noData
 }
 
 export const baseUrl = "http://localhost:4000"

@@ -1,10 +1,7 @@
 import * as React from "react";
 import Container from "@mui/material/Container";
-import {baseUrl, IBookResponse, testBook} from "@/Common";
-import * as test from "node:test";
+import {testBook} from "@/Common";
 import SearchResults, {getAllBooks} from "@/components/SearchResults";
-import {Suspense} from "react";
-import {CircularProgress} from "@mui/material";
 
 const books = [testBook, testBook, testBook, testBook, testBook, testBook, testBook, testBook];
 
@@ -13,9 +10,7 @@ const books = [testBook, testBook, testBook, testBook, testBook, testBook, testB
 export default function Home() {
   return (
     <Container maxWidth="xl" sx={{alignItems: "center"}}>
-        <Suspense fallback={<CircularProgress />}>
-            <SearchResults/>
-        </Suspense>
+        <SearchResults  query={""} searchFunc={getAllBooks}/>
     </Container>
   );
 }

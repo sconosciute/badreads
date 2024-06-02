@@ -7,20 +7,25 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Rating from "@mui/material/Rating";
 import { useState } from "react";
-import { baseUrl } from "@/Common";
 import Modal from "@mui/material/Modal";
 import TextField from "@mui/material/TextField";
 
 export default function BookDetails() {
-
     const [title, setTitle] = useState("");
     const [open, setOpen] = useState(false);
+    const [updateData, setUpdateData] = useState({
+        isbn13: "",
+        rating_1_star: 0,
+        rating_2_star: 0,
+        rating_3_star: 0,
+        rating_4_star: 0,
+        rating_5_star: 0
+    });
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
     const handleDelete = async () => {
-
         try {
             const response = await fetch(`http://localhost:4000/books/title/${title}`, {
                 method: 'DELETE',
@@ -31,6 +36,28 @@ export default function BookDetails() {
                 alert(data.message);
             } else if (response.status === 404) {
                 alert("Book not found.");
+            } else {
+                alert("Server error - contact support.");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Server error - contact support.");
+        }
+    };
+
+    const handleUpdate = async () => {
+        try {
+            const response = await fetch(`http://localhost:4000/books`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updateData)
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                alert("Book updated successfully");
             } else {
                 alert("Server error - contact support.");
             }
@@ -89,8 +116,8 @@ export default function BookDetails() {
                     </Box>
 
                     <Box sx={{ justifyContent: 'space-around' }}>
-                        <Button variant="contained" sx={{ margin: 2 }}>Update</Button>
-                        <Button variant="contained" sx={{ margin: 2 }} onClick={handleOpen}>Delete</Button>
+                        <Button variant="contained" sx={{ margin: 2 }} onClick={handleOpen}>Update</Button>
+                        <Button variant="contained" sx={{ margin: 2 }}>Delete</Button>
                     </Box>
                 </Box>
             </Box>
@@ -109,19 +136,54 @@ export default function BookDetails() {
             >
                 <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4, display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <Typography id="modal-title" variant="h6" component="h2">
-                        Confirm Delete
-                    </Typography>
-                    <Typography id="modal-description" sx={{ mt: 2 }}>
-                        Please type the title of the book to confirm deletion:
+                        Update Book Info
                     </Typography>
                     <TextField
                         fullWidth
                         variant="outlined"
-                        label="Book Title"
-                        onChange={(e) => setTitle(e.target.value)}
+                        label="1 Star Ratings"
+                        type="number"
+                        value={updateData.rating_1_star}
+                        onChange={(e) => setUpdateData({ ...updateData, rating_1_star: parseInt(e.target.value)})}
                     />
-                    <Button variant="contained" color="error" onClick={handleDelete}>
-                        Delete
+
+                    <TextField
+                        fullWidth
+                        variant="outlined"
+                        label="2 Star Ratings"
+                        type="number"
+                        value={updateData.rating_2_star}
+                        onChange={(e) => setUpdateData({ ...updateData, rating_2_star: parseInt(e.target.value)})}
+                    />
+
+                    <TextField
+                        fullWidth
+                        variant="outlined"
+                        label="3 Star Ratings"
+                        type="number"
+                        value={updateData.rating_3_star}
+                        onChange={(e) => setUpdateData({ ...updateData, rating_3_star: parseInt(e.target.value)})}
+                    />
+
+                    <TextField
+                        fullWidth
+                        variant="outlined"
+                        label="4 Star Ratings"
+                        type="number"
+                        value={updateData.rating_4_star}
+                        onChange={(e) => setUpdateData({ ...updateData, rating_4_star: parseInt(e.target.value)})}
+                    />
+
+                    <TextField
+                        fullWidth
+                        variant="outlined"
+                        label="5 Star Ratings"
+                        type="number"
+                        value={updateData.rating_5_star}
+                        onChange={(e) => setUpdateData({ ...updateData, rating_5_star: parseInt(e.target.value)})}
+                        />
+                    <Button variant="contained" color="error" onClick={handleUpdate}>
+                        Update
                     </Button>
                     <Button variant="outlined" onClick={handleClose}>
                         Cancel
@@ -131,5 +193,6 @@ export default function BookDetails() {
         </Container>
     );
 }
+
 
 

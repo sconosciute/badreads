@@ -13,15 +13,66 @@ import {IBook} from "@/Common";
 import {getBookIsbn} from "@/components/SearchResults";
 
 export default function books({params}:{params:{isbn:string}}) {
-    const [title, setTitle] = useState("");
     const [open, setOpen] = useState(false);
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
+    const [newRatings, setNewRatings] = useState({
+        rating_1_star: "",
+        rating_2_star: "",
+        rating_3_star: "",
+        rating_4_star: "",
+        rating_5_star: "",
+    });
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = event.target;
+        setNewRatings((prevRatings) => ({
+            ...prevRatings,
+            [name]: Number(value), // Convert value to a number
+        }));
+    };
+
+    function handleSubmit(isbn : number) {
+        const submit = async () => {
+            try {
+                const response = await fetch(`http://localhost:4000/books`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        isbn13: isbn,
+                        rating_1_star: newRatings.rating_1_star,
+                        rating_2_star: newRatings.rating_2_star,
+                        rating_3_star: newRatings.rating_3_star,
+                        rating_4_star: newRatings.rating_4_star,
+                        rating_5_star: newRatings.rating_5_star
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert("Book updated.");
+                    handleClose();
+                    window.location.reload();
+                } else {
+                    throw new Error(data.message || "Failed to update ratings.");
+                }
+
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Server error - contact support.");
+            }
+        };
+
+        submit();
+    }
+
     function handleDelete(title : string) {
         const deleteBook = async () => {
-
             try {
                 const response = await fetch(`http://localhost:4000/books/title/${title}`, {
                     method: 'DELETE',
@@ -47,11 +98,8 @@ export default function books({params}:{params:{isbn:string}}) {
         window.location.reload();
     }
 
-    const [books, setBooks] = useState<IBook[]>(
-        []
-    );
+    const [books, setBooks] = useState<IBook[]>([]);
     const [error, setError] = useState<string | null>(null);
-    let returningComp;
 
     useEffect(() => {
         getBookIsbn(params.isbn, "1", "1")
@@ -117,7 +165,7 @@ export default function books({params}:{params:{isbn:string}}) {
 
                             <Box>
                                 <Box sx={{ marginTop: "1em" }}>
-                                    <Typography>Average Rating: {book.ratings.average}</Typography>
+                                    <Typography>Average Rating: {book.ratings.average.toFixed(2)}</Typography>
                                     <Rating size={"medium"} value={book.ratings.average} readOnly />
                                 </Box>
 
@@ -136,11 +184,79 @@ export default function books({params}:{params:{isbn:string}}) {
                             </Box>
 
                             <Box sx={{ justifyContent: 'space-around' }}>
-                                <Button variant="contained" sx={{ margin: 2 }}>Update</Button>
+                                <Button variant="contained" sx={{ margin: 2 }} onClick={handleOpen}>Update</Button>
                                 <Button variant="contained" sx={{ margin: 2 }} onClick={() => handleDelete(book.title)}>Delete</Button>
                             </Box>
                         </Box>
                     </Box>
+
+                    {/* Confirmation Modal */}
+                    <Modal
+                        open={open}
+                        onClose={handleClose}
+                        aria-labelledby="modal-title"
+                        aria-describedby="modal-description"
+                    >
+                        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                            <Typography id="modal-title" variant="h6" component="h2">
+                                Update Book Ratings
+                            </Typography>
+                            <Typography id="modal-title" variant="h6" component="h2">
+                                Adding on to original number of reviews
+                            </Typography>
+                            <TextField
+                                fullWidth
+                                variant="outlined"
+                                label="1 Star Ratings"
+                                type="number"
+                                value={newRatings.rating_1_star}
+                                onChange={handleChange}
+                                name="rating_1_star"
+                            />
+                            <TextField
+                                fullWidth
+                                variant="outlined"
+                                label="2 Star Ratings"
+                                type="number"
+                                value={newRatings.rating_2_star}
+                                onChange={handleChange}
+                                name="rating_2_star"
+                            />
+                            <TextField
+                                fullWidth
+                                variant="outlined"
+                                label="3 Star Ratings"
+                                type="number"
+                                value={newRatings.rating_3_star}
+                                onChange={handleChange}
+                                name="rating_3_star"
+                            />
+                            <TextField
+                                fullWidth
+                                variant="outlined"
+                                label="4 Star Ratings"
+                                type="number"
+                                value={newRatings.rating_4_star}
+                                onChange={handleChange}
+                                name="rating_4_star"
+                            />
+                            <TextField
+                                fullWidth
+                                variant="outlined"
+                                label="5 Star Ratings"
+                                type="number"
+                                value={newRatings.rating_5_star}
+                                onChange={handleChange}
+                                name="rating_5_star"
+                            />
+                            <Button variant="contained" color="error" onClick={() => handleSubmit(book.isbn13)}>
+                                Update
+                            </Button>
+                            <Button variant="outlined" onClick={handleClose}>
+                                Cancel
+                            </Button>
+                        </Box>
+                    </Modal>
                 </Container>
             ))}
         </Box>

@@ -86,7 +86,7 @@ export default function BookDetails({params}:{params:{isbn:string}}) {
     }
 
     return (
-        <Box>
+        <Box marginBottom={"1em"}>
             {books.map((book, index) => (
                 <Container maxWidth="lg" sx={{ display: 'flex', flexFlow: "row", marginTop: "1em", gap: "2em", justifyContent:"center" }}>
                     <Box sx={{ padding: "0.5em", minWidth: 600, borderRadius: "5px", display: "flex", backgroundColor: '#E0DFD5',  flex: '0 0 70%'}}>

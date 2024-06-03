@@ -15,10 +15,13 @@ import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow}
 
 export default function books({params}:{params:{isbn:string}}) {
     const [open, setOpen] = useState(false);
-
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const [books, setBooks] = useState<IBook[]>([]);
+    const [error, setError] = useState<string | null>(null);
 
+
+    // An object to hold different ratings counts
     const [newRatings, setNewRatings] = useState({
         rating_1_star: "",
         rating_2_star: "",
@@ -27,6 +30,7 @@ export default function books({params}:{params:{isbn:string}}) {
         rating_5_star: "",
     });
 
+    // Get the new rating count
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
         setNewRatings((prevRatings) => ({
@@ -35,6 +39,7 @@ export default function books({params}:{params:{isbn:string}}) {
         }));
     };
 
+    // Function to update the book's rating counts
     function handleSubmit(isbn : number) {
         const submit = async () => {
             try {
@@ -72,6 +77,7 @@ export default function books({params}:{params:{isbn:string}}) {
         submit();
     }
 
+    // Function to delete a book by title. Refreshes page.
     function handleDelete(title : string) {
         const deleteBook = async () => {
             try {
@@ -99,9 +105,7 @@ export default function books({params}:{params:{isbn:string}}) {
         window.location.reload();
     }
 
-    const [books, setBooks] = useState<IBook[]>([]);
-    const [error, setError] = useState<string | null>(null);
-
+    // Get book(s) from API
     useEffect(() => {
         getBookIsbn(params.isbn, "1", "1")
             .then((res)=> {
@@ -119,7 +123,7 @@ export default function books({params}:{params:{isbn:string}}) {
             })
     }, []);
 
-
+    // Handle error (No books found)
     if (error) {
         return (
             <Container maxWidth="lg" sx={{ display: 'flex', flexFlow: "row", marginTop: "1em", gap: "2em", justifyContent:"center" }}>
@@ -130,6 +134,7 @@ export default function books({params}:{params:{isbn:string}}) {
         );
     }
 
+    // Display book(s) details on page
     return (
         <Box marginBottom={"1em"}>
             {books.map((book, index) => (
@@ -146,7 +151,7 @@ export default function books({params}:{params:{isbn:string}}) {
                                 maxWidth: { xs: 540, md: 675 },
                             }}
                             alt={book.title}
-                            src={book.icons.large}
+                            src={book.icons.large ? book.icons.large : 'https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png'}
                         />
 
                         {/* Main information */}
@@ -167,6 +172,7 @@ export default function books({params}:{params:{isbn:string}}) {
                                 ISBN-13: {book.isbn13}
                             </Typography>
 
+                            {/* Ratings */}
                             <Box>
                                 <Box sx={{ marginTop: "1em" }}>
                                     <Typography>Average Rating: {book.ratings.average.toFixed(2)}</Typography>
@@ -211,6 +217,7 @@ export default function books({params}:{params:{isbn:string}}) {
                                 </TableContainer>
                             </Box>
 
+                            {/* Buttons */}
                             <Box sx={{ justifyContent: 'space-around' }}>
                                 <Button variant="contained" sx={{ margin: 2 }} onClick={handleOpen}>Update</Button>
                                 <Button variant="contained" sx={{ margin: 2 }} onClick={() => handleDelete(book.title)}>Delete</Button>

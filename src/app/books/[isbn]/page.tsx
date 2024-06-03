@@ -10,8 +10,9 @@ import {useEffect, useState} from "react";
 import Modal from "@mui/material/Modal";
 import TextField from "@mui/material/TextField";
 import {IBook} from "@/Common";
+import {getBookIsbn} from "@/components/SearchResults";
 
-export default function BookDetails({params}:{params:{isbn:string}}) {
+export default function books({params}:{params:{isbn:string}}) {
     const [title, setTitle] = useState("");
     const [open, setOpen] = useState(false);
 
@@ -53,25 +54,20 @@ export default function BookDetails({params}:{params:{isbn:string}}) {
     let returningComp;
 
     useEffect(() => {
-        // Getting the ISBN from URL
-        const params = new URLSearchParams(window.location.search);
-        const bookID = params.get('id');
+        getBookIsbn(params.isbn, "1", "1")
+            .then((res)=> {
+                const fetchBook = async () => {
+                    const response = await fetch(`http://localhost:4000/books/isbn?id=${params.isbn}`);
 
-        const fetchBook = async () => {
-            const response = await fetch(`http://localhost:4000/books/isbn?id=${bookID}`);
+                    if (!response.ok) {
+                        setError('Failed to fetch book.');
+                    }
 
-            if (!response.ok) {
-                setError('Failed to fetch movie');
-            }
-
-            const book = await response.json();
-            setBooks(book.entries);
-
-            console.dir(book);
-        };
-
-        fetchBook();
-
+                    const book = await response.json();
+                    setBooks(book.entries);
+                };
+                fetchBook();
+            })
     }, []);
 
 
@@ -88,7 +84,7 @@ export default function BookDetails({params}:{params:{isbn:string}}) {
     return (
         <Box marginBottom={"1em"}>
             {books.map((book, index) => (
-                <Container maxWidth="lg" sx={{ display: 'flex', flexFlow: "row", marginTop: "1em", gap: "2em", justifyContent:"center" }}>
+                <Container key={index} maxWidth="lg" sx={{ display: 'flex', flexFlow: "row", marginTop: "1em", gap: "2em", justifyContent:"center" }}>
                     <Box sx={{ padding: "0.5em", minWidth: 600, borderRadius: "5px", display: "flex", backgroundColor: '#E0DFD5',  flex: '0 0 70%'}}>
                         {/* Book image */}
                         <Box

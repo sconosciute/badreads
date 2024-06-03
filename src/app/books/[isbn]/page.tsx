@@ -18,28 +18,33 @@ export default function BookDetails({params}:{params:{isbn:string}}) {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    const handleDelete = async () => {
+    function handleDelete(title : string) {
+        const deleteBook = async () => {
 
-        try {
-            const response = await fetch(`http://localhost:4000/books/title/${title}`, {
-                method: 'DELETE',
-            });
+            try {
+                const response = await fetch(`http://localhost:4000/books/title/${title}`, {
+                    method: 'DELETE',
+                });
 
-            if (response.ok) {
-                const data = await response.json();
-                alert(data.message);
-            } else if (response.status === 404) {
-                alert("Book not found.");
-            } else {
+                if (response.ok) {
+                    const data = await response.json();
+                    alert(data.message);
+                } else if (response.status === 404) {
+                    alert("Book not found.");
+                } else {
+                    alert("Server error - contact support.");
+                }
+            } catch (error) {
+                console.error("Error:", error);
                 alert("Server error - contact support.");
             }
-        } catch (error) {
-            console.error("Error:", error);
-            alert("Server error - contact support.");
-        }
 
-        handleClose();
-    };
+            handleClose();
+        };
+
+        deleteBook();
+        window.location.reload();
+    }
 
     const [books, setBooks] = useState<IBook[]>(
         []
@@ -136,39 +141,10 @@ export default function BookDetails({params}:{params:{isbn:string}}) {
 
                             <Box sx={{ justifyContent: 'space-around' }}>
                                 <Button variant="contained" sx={{ margin: 2 }}>Update</Button>
-                                <Button variant="contained" sx={{ margin: 2 }} onClick={handleOpen}>Delete</Button>
+                                <Button variant="contained" sx={{ margin: 2 }} onClick={() => handleDelete(book.title)}>Delete</Button>
                             </Box>
                         </Box>
                     </Box>
-
-                    {/* Confirmation Modal */}
-                    <Modal
-                        open={open}
-                        onClose={handleClose}
-                        aria-labelledby="modal-title"
-                        aria-describedby="modal-description"
-                    >
-                        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                            <Typography id="modal-title" variant="h6" component="h2">
-                                Confirm Delete
-                            </Typography>
-                            <Typography id="modal-description" sx={{ mt: 2 }}>
-                                Please type the title of the book to confirm deletion:
-                            </Typography>
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                label="Book Title"
-                                onChange={(e) => setTitle(e.target.value)}
-                            />
-                            <Button variant="contained" color="error" onClick={handleDelete}>
-                                Delete
-                            </Button>
-                            <Button variant="outlined" onClick={handleClose}>
-                                Cancel
-                            </Button>
-                        </Box>
-                    </Modal>
                 </Container>
             ))}
         </Box>

@@ -27,7 +27,7 @@ export default function book({params}:{params:{isbn:string}}){
         <>
             {(pageState == compStates.ready) && <Book book={book as IBook} />}
             {(pageState == compStates.loading) && <CircularProgress />}
-            {(pageState == compStates.noData) && <Typography>No book found.</Typography>}
+            {(pageState == compStates.noData) && <Typography sx={{margin: "2em"}}>No book found.</Typography>}
         </>
 
     )

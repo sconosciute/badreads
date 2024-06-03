@@ -11,6 +11,7 @@ import Modal from "@mui/material/Modal";
 import TextField from "@mui/material/TextField";
 import {IBook} from "@/Common";
 import {getBookIsbn} from "@/components/SearchResults";
+import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 
 export default function books({params}:{params:{isbn:string}}) {
     const [open, setOpen] = useState(false);
@@ -172,18 +173,42 @@ export default function books({params}:{params:{isbn:string}}) {
                                     <Rating size={"medium"} precision={0.1} value={book.ratings.average} readOnly />
                                 </Box>
 
-                                <Typography sx={{ marginTop: "1em" }}>
-                                    <Rating size={"medium"} value={1} readOnly />
-                                    {book.ratings.rating_1} <br />
-                                    <Rating size={"medium"} value={2} readOnly />
-                                    {book.ratings.rating_2} <br />
-                                    <Rating size={"medium"} value={3} readOnly />
-                                    {book.ratings.rating_3} <br />
-                                    <Rating size={"medium"} value={4} readOnly />
-                                    {book.ratings.rating_4} <br />
-                                    <Rating size={"medium"} value={5} readOnly />
-                                    {book.ratings.rating_5} <br />
-                                </Typography>
+                                <TableContainer component={Paper} sx={{maxWidth: "20em", marginTop: "1em"}}>
+                                    <Table aria-label="Rating counts" size="small">
+                                        <TableHead >
+                                            <TableRow>
+                                                <TableCell sx={{fontWeight: "700"}}>Rating</TableCell>
+                                                <TableCell sx={{fontWeight: "700"}}>No. of Ratings</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            <TableRow>
+                                                <TableCell>1-star</TableCell>
+                                                <TableCell>{book.ratings.rating_1}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell>2-star</TableCell>
+                                                <TableCell>{book.ratings.rating_2}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell>3-star</TableCell>
+                                                <TableCell>{book.ratings.rating_3}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell>4-star</TableCell>
+                                                <TableCell>{book.ratings.rating_4}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell>5-star</TableCell>
+                                                <TableCell>{book.ratings.rating_5}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell>Total</TableCell>
+                                                <TableCell>{book.ratings.count}</TableCell>
+                                            </TableRow>
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
                             </Box>
 
                             <Box sx={{ justifyContent: 'space-around' }}>

@@ -29,19 +29,30 @@ export default function BookDetails() {
     const [title, setTitle] = useState("");
     const [open, setOpen] = useState(false);
 
-    const handleOpen = () => setOpen(true);
+    const handleOpen = () => {
+        setOpen(true);
+        setUpdateData({
+            ...updateData,
+            rating_1_star: 0,
+            rating_2_star: 0,
+            rating_3_star: 0,
+            rating_4_star: 0,
+            rating_5_star: 0
+        });
+    };
     const handleClose = () => setOpen(false);
 
     const handleDelete = async () => {
-
+        if (!book) return;
         try {
-            const response = await fetch(`http://localhost:4000/books/title/${title}`, {
+            const response = await fetch(`http://localhost:4000/books/title/${book.title}`, {
                 method: 'DELETE',
             });
 
             if (response.ok) {
                 const data = await response.json();
                 alert(data.message);
+                // setBook(null);
             } else if (response.status === 404) {
                 alert("Book not found.");
             } else {
@@ -51,26 +62,58 @@ export default function BookDetails() {
             console.error("Error:", error);
             alert("Server error - contact support.");
         }
+    };
+
+    const handleUpdate = async () => {
+        try {
+            const response = await fetch(`http://localhost:4000/books`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updateData) // Send the entire updateData object
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                alert("Book updated successfully");
+                setBook(data); // Update book details with new data
+            } else {
+                throw new Error("Server error");
+            }
+        } catch (error) {
+            console.error("Error updating book:", error);
+            alert("Error updating book. Please try again later.");
+        }
 
         handleClose();
     };
 
-    const [book, setBook] = useState(
-        {
-            isbn13: null,
-            authors: "",
-            publication_year: null,
-            original_title: "",
-            title: "",
-            rating_1_star: null,
-            rating_2_star: null,
-            rating_3_star: null,
-            rating_4_star: null,
-            rating_5_star: null,
-            image_url: "",
-            image_small_url: ""
-        }
-    );
+
+
+    const [book, setBook] = useState({
+        isbn13: null,
+        authors: "",
+        publication_year: null,
+        original_title: "",
+        title: "",
+        rating_1_star: null,
+        rating_2_star: null,
+        rating_3_star: null,
+        rating_4_star: null,
+        rating_5_star: null,
+        image_url: "",
+        image_small_url: ""
+    });
+
+    const [updateData, setUpdateData] = useState({
+        isbn13: book.isbn13,
+        rating_1_star: 0,
+        rating_2_star: 0,
+        rating_3_star: 0,
+        rating_4_star: 0,
+        rating_5_star: 0
+    });
 
     useEffect(() => {
         // Getting the ISBN from URL
@@ -79,7 +122,16 @@ export default function BookDetails() {
 
         const fetchBook = async () => {
             const response = await fetch(`http://localhost:4000/books/isbn?id=${bookID}`);
-            const book = await response.json();setBook(book.entries);
+            const book = await response.json();
+            setBook(book.entries);
+            setUpdateData({
+                isbn13: book.entries.isbn13,
+                rating_1_star: book.entries.rating_1_star,
+                rating_2_star: book.entries.rating_2_star,
+                rating_3_star: book.entries.rating_3_star,
+                rating_4_star: book.entries.rating_4_star,
+                rating_5_star: book.entries.rating_5_star
+            });
             console.dir(book);
         };
 
@@ -140,8 +192,8 @@ export default function BookDetails() {
                     </Box>
 
                     <Box sx={{ justifyContent: 'space-around' }}>
-                        <Button variant="contained" sx={{ margin: 2 }}>Update</Button>
-                        <Button variant="contained" sx={{ margin: 2 }} onClick={handleOpen}>Delete</Button>
+                        <Button variant="contained" sx={{ margin: 2 }} onClick={handleOpen}>Update</Button>
+                        <Button variant="contained" sx={{ margin: 2 }} onClick={handleDelete}>Delete</Button>
                     </Box>
                 </Box>
             </Box>
@@ -154,20 +206,58 @@ export default function BookDetails() {
                 aria-describedby="modal-description"
             >
                 <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    <Typography id="modal-title" variant="h6" component="h2">
-                        Confirm Delete
+                    <Typography id="modal-title" variant="h7" component="h2">
+                        Update Book Ratings
                     </Typography>
-                    <Typography id="modal-description" sx={{ mt: 2 }}>
-                        Please type the title of the book to confirm deletion:
+                    <Typography id="modal-title" variant="h6" component="h2">
+                        Adding on to original number of reviews
                     </Typography>
                     <TextField
                         fullWidth
                         variant="outlined"
-                        label="Book Title"
-                        onChange={(e) => setTitle(e.target.value)}
+                        label="1 Star Ratings"
+                        type="number"
+                        value={updateData.rating_1_star}
+                        onChange={(e) => setUpdateData({ ...updateData, rating_1_star: parseInt(e.target.value) })}
                     />
-                    <Button variant="contained" color="error" onClick={handleDelete}>
-                        Delete
+
+                    <TextField
+                        fullWidth
+                        variant="outlined"
+                        label="2 Star Ratings"
+                        type="number"
+                        value={updateData.rating_2_star}
+                        onChange={(e) => setUpdateData({ ...updateData, rating_2_star: parseInt(e.target.value) })}
+                    />
+
+                    <TextField
+                        fullWidth
+                        variant="outlined"
+                        label="3 Star Ratings"
+                        type="number"
+                        value={updateData.rating_3_star}
+                        onChange={(e) => setUpdateData({ ...updateData, rating_3_star: parseInt(e.target.value) })}
+                    />
+
+                    <TextField
+                        fullWidth
+                        variant="outlined"
+                        label="4 Star Ratings"
+                        type="number"
+                        value={updateData.rating_4_star}
+                        onChange={(e) => setUpdateData({ ...updateData, rating_4_star: parseInt(e.target.value) })}
+                    />
+
+                    <TextField
+                        fullWidth
+                        variant="outlined"
+                        label="5 Star Ratings"
+                        type="number"
+                        value={updateData.rating_5_star}
+                        onChange={(e) => setUpdateData({ ...updateData, rating_5_star: parseInt(e.target.value) })}
+                    />
+                    <Button variant="contained" color="error" onClick={handleUpdate}>
+                        Update
                     </Button>
                     <Button variant="outlined" onClick={handleClose}>
                         Cancel

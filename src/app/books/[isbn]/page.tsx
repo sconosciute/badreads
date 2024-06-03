@@ -66,6 +66,7 @@ export default function BookDetails({params}:{params:{isbn:string}}) {
         handleClose();
     };
 
+
     const [updateData, setUpdateData] = useState({
         isbn13: book.isbn13,
         rating_1_star: 0,

@@ -153,10 +153,13 @@ export default function books({params}:{params:{isbn:string}}) {
                             <Typography variant="h4">
                                 {book.title}
                             </Typography>
-                            <Typography sx={{ fontSize: "1.6em" }}>
+                            <Typography variant="body1">
+                                Original title: {book.original_title}
+                            </Typography>
+                            <Typography sx={{ fontSize: "1.6em", marginTop: "1em" }}>
                                 {book.authors}
                             </Typography>
-                            <Typography>
+                            <Typography sx={{ marginTop: "1em" }}>
                                 {book.publication}
                             </Typography>
                             <Typography sx={{ marginTop: "1em" }}>

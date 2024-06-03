@@ -11,7 +11,7 @@ import Modal from "@mui/material/Modal";
 import TextField from "@mui/material/TextField";
 import {IBook} from "@/Common";
 
-export default function BookDetails() {
+export default function BookDetails({params}:{params:{isbn:string}}) {
     const [title, setTitle] = useState("");
     const [open, setOpen] = useState(false);
 

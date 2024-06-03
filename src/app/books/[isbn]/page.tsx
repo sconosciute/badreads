@@ -166,7 +166,7 @@ export default function books({params}:{params:{isbn:string}}) {
                             <Box>
                                 <Box sx={{ marginTop: "1em" }}>
                                     <Typography>Average Rating: {book.ratings.average.toFixed(2)}</Typography>
-                                    <Rating size={"medium"} value={book.ratings.average} readOnly />
+                                    <Rating size={"medium"} precision={0.1} value={book.ratings.average} readOnly />
                                 </Box>
 
                                 <Typography sx={{ marginTop: "1em" }}>

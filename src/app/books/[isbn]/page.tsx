@@ -44,6 +44,8 @@ export default function BookDetails() {
     const [books, setBooks] = useState<IBook[]>(
         []
     );
+    const [error, setError] = useState<string | null>(null);
+    let returningComp;
 
     useEffect(() => {
         // Getting the ISBN from URL
@@ -52,13 +54,31 @@ export default function BookDetails() {
 
         const fetchBook = async () => {
             const response = await fetch(`http://localhost:4000/books/isbn?id=${bookID}`);
+
+            if (!response.ok) {
+                setError('Failed to fetch movie');
+            }
+
             const book = await response.json();
             setBooks(book.entries);
+
             console.dir(book);
         };
 
         fetchBook();
+
     }, []);
+
+
+    if (error) {
+        return (
+            <Container maxWidth="lg" sx={{ display: 'flex', flexFlow: "row", marginTop: "1em", gap: "2em", justifyContent:"center" }}>
+                <Box sx={{ padding: "0.5em", minWidth: 600, borderRadius: "5px", display: "flex", backgroundColor: '#E0DFD5',  flex: '0 0 70%'}}>
+                    <Typography>No books found with the given ISBN.</Typography>
+                </Box>
+            </Container>
+        );
+    }
 
     return (
         <Box>
@@ -152,6 +172,5 @@ export default function BookDetails() {
                 </Container>
             ))}
         </Box>
-
     );
 }

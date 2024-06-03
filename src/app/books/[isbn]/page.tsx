@@ -19,9 +19,8 @@ export default function BookDetails({params}:{params:{isbn:string}}) {
     const handleClose = () => setOpen(false);
 
     const handleDelete = async () => {
-        if (!book) return;
         try {
-            const response = await fetch(`http://localhost:4000/books/title/${book.title}`, {
+            const response = await fetch(`http://localhost:4000/books/title/${title}`, {
                 method: 'DELETE',
             });
 
@@ -54,7 +53,7 @@ export default function BookDetails({params}:{params:{isbn:string}}) {
             if (response.ok) {
                 const data = await response.json();
                 alert("Book updated successfully");
-                setBook(data); // Update book details with new data
+                setBooks(data); // Update book details with new data
             } else {
                 throw new Error("Server error");
             }
@@ -68,7 +67,7 @@ export default function BookDetails({params}:{params:{isbn:string}}) {
 
 
     const [updateData, setUpdateData] = useState({
-        isbn13: book.isbn13,
+        isbn13: "",
         rating_1_star: 0,
         rating_2_star: 0,
         rating_3_star: 0,

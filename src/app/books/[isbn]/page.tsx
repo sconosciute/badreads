@@ -18,20 +18,43 @@ export default function BookDetails({params}:{params:{isbn:string}}) {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    const handleDelete = async () => {
+    const [newRatings, setNewRatings] = useState({
+        rating_1_star: "",
+        rating_2_star: "",
+        rating_3_star: "",
+        rating_4_star: "",
+        rating_5_star: "",
+    });
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = event.target;
+        setNewRatings((prevRatings) => ({
+            ...prevRatings,
+            [name]: Number(value), // Convert value to a number
+        }));
+    };
+
+
+    const handleSubmit = async () => {
         try {
-            const response = await fetch(`http://localhost:4000/books/title/${title}`, {
-                method: 'DELETE',
+            const response = await fetch(`http://localhost:4000/books`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    isbn13: params.isbn,
+                    ratings: newRatings,
+                }),
             });
 
+            const data = await response.json();
+
             if (response.ok) {
-                const data = await response.json();
                 alert(data.message);
-                // setBook(null);
-            } else if (response.status === 404) {
-                alert("Book not found.");
+                handleClose();
             } else {
-                alert("Server error - contact support.");
+                throw new Error(data.message || "Failed to update ratings.");
             }
         } catch (error) {
             console.error("Error:", error);
@@ -40,41 +63,35 @@ export default function BookDetails({params}:{params:{isbn:string}}) {
     };
 
 
-    const handleUpdate = async () => {
-        try {
-            const response = await fetch(`http://localhost:4000/books`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(updateData) // Send the entire updateData object
-            });
 
-            if (response.ok) {
-                const data = await response.json();
-                alert("Book updated successfully");
-                setBooks(data); // Update book details with new data
-            } else {
-                throw new Error("Server error");
+
+    function handleDelete(title : string) {
+        const deleteBook = async () => {
+
+            try {
+                const response = await fetch(`http://localhost:4000/books/title/${title}`, {
+                    method: 'DELETE',
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    alert(data.message);
+                } else if (response.status === 404) {
+                    alert("Book not found.");
+                } else {
+                    alert("Server error - contact support.");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Server error - contact support.");
             }
-        } catch (error) {
-            console.error("Error updating book:", error);
-            alert("Error updating book. Please try again later.");
-        }
 
             handleClose();
         };
 
-
-    const [updateData, setUpdateData] = useState({
-        isbn13: "",
-        rating_1_star: 0,
-        rating_2_star: 0,
-        rating_3_star: 0,
-        rating_4_star: 0,
-        rating_5_star: 0
-    });
-
+        deleteBook();
+        window.location.reload();
+    }
 
     const [books, setBooks] = useState<IBook[]>(
         []
@@ -96,14 +113,6 @@ export default function BookDetails({params}:{params:{isbn:string}}) {
 
             const book = await response.json();
             setBooks(book.entries);
-            setUpdateData({
-                isbn13: book.entries.isbn13,
-                rating_1_star: book.entries.rating_1_star,
-                rating_2_star: book.entries.rating_2_star,
-                rating_3_star: book.entries.rating_3_star,
-                rating_4_star: book.entries.rating_4_star,
-                rating_5_star: book.entries.rating_5_star
-            });
 
             console.dir(book);
         };
@@ -179,11 +188,10 @@ export default function BookDetails({params}:{params:{isbn:string}}) {
 
                             <Box sx={{ justifyContent: 'space-around' }}>
                                 <Button variant="contained" sx={{ margin: 2 }} onClick={handleOpen}>Update</Button>
-                                <Button variant="contained" sx={{ margin: 2 }} onClick={handleDelete}>Delete</Button>
+                                <Button variant="contained" sx={{ margin: 2 }} onClick={() => handleDelete(book.title)}>Delete</Button>
                             </Box>
                         </Box>
                     </Box>
-
                     {/* Confirmation Modal */}
                     <Modal
                         open={open}
@@ -192,7 +200,7 @@ export default function BookDetails({params}:{params:{isbn:string}}) {
                         aria-describedby="modal-description"
                     >
                         <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                            <Typography id="modal-title" component="h2">
+                            <Typography id="modal-title" variant="h6" component="h2">
                                 Update Book Ratings
                             </Typography>
                             <Typography id="modal-title" variant="h6" component="h2">
@@ -203,46 +211,47 @@ export default function BookDetails({params}:{params:{isbn:string}}) {
                                 variant="outlined"
                                 label="1 Star Ratings"
                                 type="number"
-                                value={updateData.rating_1_star}
-                                onChange={(e) => setUpdateData({ ...updateData, rating_1_star: parseInt(e.target.value) })}
+                                value={newRatings.rating_1_star}
+                                onChange={handleChange}
+                                name="rating_1_star"
                             />
-
                             <TextField
                                 fullWidth
                                 variant="outlined"
                                 label="2 Star Ratings"
                                 type="number"
-                                value={updateData.rating_2_star}
-                                onChange={(e) => setUpdateData({ ...updateData, rating_2_star: parseInt(e.target.value) })}
+                                value={newRatings.rating_2_star}
+                                onChange={handleChange}
+                                name="rating_2_star"
                             />
-
                             <TextField
                                 fullWidth
                                 variant="outlined"
                                 label="3 Star Ratings"
                                 type="number"
-                                value={updateData.rating_3_star}
-                                onChange={(e) => setUpdateData({ ...updateData, rating_3_star: parseInt(e.target.value) })}
+                                value={newRatings.rating_3_star}
+                                onChange={handleChange}
+                                name="rating_3_star"
                             />
-
                             <TextField
                                 fullWidth
                                 variant="outlined"
                                 label="4 Star Ratings"
                                 type="number"
-                                value={updateData.rating_4_star}
-                                onChange={(e) => setUpdateData({ ...updateData, rating_4_star: parseInt(e.target.value) })}
+                                value={newRatings.rating_4_star}
+                                onChange={handleChange}
+                                name="rating_4_star"
                             />
-
                             <TextField
                                 fullWidth
                                 variant="outlined"
                                 label="5 Star Ratings"
                                 type="number"
-                                value={updateData.rating_5_star}
-                                onChange={(e) => setUpdateData({ ...updateData, rating_5_star: parseInt(e.target.value) })}
+                                value={newRatings.rating_5_star}
+                                onChange={handleChange}
+                                name="rating_5_star"
                             />
-                            <Button variant="contained" color="error" onClick={handleUpdate}>
+                            <Button variant="contained" color="error" onClick={handleSubmit}>
                                 Update
                             </Button>
                             <Button variant="outlined" onClick={handleClose}>

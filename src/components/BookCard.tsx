@@ -2,10 +2,12 @@
 
 import * as React from "react";
 import {useMediaQuery, useTheme} from "@mui/system";
-import {Card, CardContent, CardMedia, Rating} from "@mui/material";
+import {Card, CardActions, CardContent, CardMedia, Rating} from "@mui/material";
 import Box from "@mui/material/Box";
 import {IBook} from "@/Common";
 import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import NextLink from "next/link";
 
 
 export default function BookCard({book}: {book: IBook}) {
@@ -26,7 +28,9 @@ export default function BookCard({book}: {book: IBook}) {
                     </Typography>
                     <Rating key={"Ratings for " + book.title} name="Average Rating" value={book.ratings.average} precision={0.5} readOnly />
                 </CardContent>
-
+                <CardActions>
+                    <Button component={NextLink} size="small" href={`/book/${book.isbn13}`}>More Details</Button>
+                </CardActions>
             </Box>
         </Card>
     )

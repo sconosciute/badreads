@@ -12,7 +12,6 @@ import TextField from "@mui/material/TextField";
 import {IBook} from "@/Common";
 
 export default function BookDetails({params}:{params:{isbn:string}}) {
-    const [title, setTitle] = useState("");
     const [open, setOpen] = useState(false);
 
     const handleOpen = () => setOpen(true);
@@ -34,40 +33,45 @@ export default function BookDetails({params}:{params:{isbn:string}}) {
         }));
     };
 
+    function handleSubmit(isbn : number) {
+        const submit = async () => {
+            try {
+                const response = await fetch(`http://localhost:4000/books`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        isbn13: isbn,
+                        rating_1_star: newRatings.rating_1_star,
+                        rating_2_star: newRatings.rating_2_star,
+                        rating_3_star: newRatings.rating_3_star,
+                        rating_4_star: newRatings.rating_4_star,
+                        rating_5_star: newRatings.rating_5_star
+                    }),
+                });
 
-    const handleSubmit = async () => {
-        try {
-            const response = await fetch(`http://localhost:4000/books`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    isbn13: params.isbn,
-                    ratings: newRatings,
-                }),
-            });
+                const data = await response.json();
 
-            const data = await response.json();
+                if (response.ok) {
+                    alert("Book updated.");
+                    handleClose();
+                    window.location.reload();
+                } else {
+                    throw new Error(data.message || "Failed to update ratings.");
+                }
 
-            if (response.ok) {
-                alert(data.message);
-                handleClose();
-            } else {
-                throw new Error(data.message || "Failed to update ratings.");
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Server error - contact support.");
             }
-        } catch (error) {
-            console.error("Error:", error);
-            alert("Server error - contact support.");
-        }
-    };
+        };
 
-
-
+        submit();
+    }
 
     function handleDelete(title : string) {
         const deleteBook = async () => {
-
             try {
                 const response = await fetch(`http://localhost:4000/books/title/${title}`, {
                     method: 'DELETE',
@@ -93,11 +97,8 @@ export default function BookDetails({params}:{params:{isbn:string}}) {
         window.location.reload();
     }
 
-    const [books, setBooks] = useState<IBook[]>(
-        []
-    );
+    const [books, setBooks] = useState<IBook[]>([]);
     const [error, setError] = useState<string | null>(null);
-    let returningComp;
 
     useEffect(() => {
         // Getting the ISBN from URL
@@ -168,7 +169,7 @@ export default function BookDetails({params}:{params:{isbn:string}}) {
 
                             <Box>
                                 <Box sx={{ marginTop: "1em" }}>
-                                    <Typography>Average Rating: {book.ratings.average}</Typography>
+                                    <Typography>Average Rating: {book.ratings.average.toFixed(2)}</Typography>
                                     <Rating size={"medium"} value={book.ratings.average} readOnly />
                                 </Box>
 
@@ -192,6 +193,7 @@ export default function BookDetails({params}:{params:{isbn:string}}) {
                             </Box>
                         </Box>
                     </Box>
+
                     {/* Confirmation Modal */}
                     <Modal
                         open={open}
@@ -251,7 +253,7 @@ export default function BookDetails({params}:{params:{isbn:string}}) {
                                 onChange={handleChange}
                                 name="rating_5_star"
                             />
-                            <Button variant="contained" color="error" onClick={handleSubmit}>
+                            <Button variant="contained" color="error" onClick={() => handleSubmit(book.isbn13)}>
                                 Update
                             </Button>
                             <Button variant="outlined" onClick={handleClose}>

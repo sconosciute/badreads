@@ -29,7 +29,7 @@ export default function BookCard({book}: {book: IBook}) {
                     <Rating key={"Ratings for " + book.title} name="Average Rating" value={book.ratings.average} precision={0.5} readOnly />
                 </CardContent>
                 <CardActions>
-                    <Button component={NextLink} size="small" href={`/book/${book.isbn13}`}>More Details</Button>
+                    <Button component={NextLink} size="small" href={`/books/${book.isbn13}`}>More Details</Button>
                 </CardActions>
             </Box>
         </Card>

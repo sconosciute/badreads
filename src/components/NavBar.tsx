@@ -1,50 +1,34 @@
-"use client";
+"use client"
 
 import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import NavSelect from "../components/NavSelect";
 import AddBookDialog from "../components/AddBookDialog";
-import {useState} from "react";
 import NavSearchField from "@/components/NavSearchField";
-
-const basePath = "http://localhost:4000"
-
-function handleSearch(query: string, mode: string) {
-  switch (mode){
-      case "title":
-          break;
-      case "author":
-          break;
-      case "isbn-13":
-          break;
-  }
-}
+import Link from "@mui/material/Link";
+import NextLink from "next/link";
+import {useTheme} from "@mui/system";
 
 export default function SearchAppBar() {
-    const [searchMode, setSearchMode] = useState("title");
+    const theme = useTheme();
     return (
-        <Box sx={{flexGrow: 1}}>
+        <Box sx={{flexGrow: 1, marginBottom: 1.5}}>
             <AppBar position="static">
                 <Toolbar
                     sx={{justifyContent: "space-between", display: "flex", alignItems: "center", flexWrap: "wrap"}}>
                     <Box>
-                        <Typography
-                            variant="h6"
-                            noWrap
-                            component="div"
-                            sx={{flexGrow: 1, display: {xs: "none", sm: "block"}}}
-                        >
+                        <Link href="/" aria-label="Go to home" component={NextLink} sx={{
+                            fontSize: "2em",
+                            fontWeight: "375",
+                            [theme.breakpoints.up("sm")]: {
+                                fontSize: "2.5em"
+                            }
+                            }} underline="none" variant="h1">
                             Library
-                        </Typography>
+                        </Link>
                     </Box>
-                    <Box display="flex" flexDirection="row" alignItems="center">
-                        <NavSelect {...{searchMode, setSearchMode}}></NavSelect>
-
-                        <NavSearchField searchMode={searchMode} setSearchMode={setSearchMode}/>
-                    </Box>
+                    <NavSearchField/>
                     <Box>
                         <AddBookDialog/>
                     </Box>
